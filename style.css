@@ -1,0 +1,84 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root{
+    --color-bg-calendar: #1462c9;
+    --color-cell: #e3e3e3;
+    --color-cell-disabled:#343739;
+    --color-selected: black;
+}
+
+.root{
+    min-height: 100vh;
+    padding: 0 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.calendar{
+    padding: 20px 10px ;
+    background-color: var(--color-bg-calendar);
+    border-radius: 3px;
+    width: max-content;
+    font-family: sans-serif;
+}
+
+.calendar_header{
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+}
+
+.calendar .control{
+    color: #fff ;
+    font-weight: bold;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.grid_header,
+.grid_body{
+    display: grid;
+    grid-template-columns: repeat(7,1fr);
+}
+
+.grid_header{
+    color: white;
+    margin-bottom: 20px ;
+}
+
+.grid_body{
+    grid-auto-rows: 50px;
+}
+.grid_cell--gh{
+    text-align: center;
+}
+.grid_cell--gd{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-cell);
+    cursor: pointer;
+}
+
+.grid_cell-selected{
+    color: var(--color-selected);
+    background-color: white;
+    border-radius: 50%;
+    border: 1px solid white;
+    box-shadow: 0 0 0 2px var(--color-bg-calendar) inset;
+}
+
+.grid_cell-disabled{
+    color: var(--color-cell-disabled);
+    cursor: not-allowed;
+}
+
