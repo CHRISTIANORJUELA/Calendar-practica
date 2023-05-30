@@ -1,33 +1,5 @@
 class template{
-  static getTemplate(){
-    return `
-        <div class="calendar_header">
-                   <button type="button" class="control control--prev"> &lt;</button>
-                   <span class="month-name">jun 2019</span>
-                   <button type="button" class="control control--next">&gt;</button>
-        </div>
-                 <div class="calendar_body">
-                 <div class="grid">
-                 <div class="grid_header">
-                     <span class="grid_cell grid_cell--gh">Lunes</span>
-                     <span class="grid_cell grid_cell--gh">Martes</span>
-                     <span class="grid_cell grid_cell--gh">Miercoles</span>
-                     <span class="grid_cell grid_cell--gh">Jueves</span>
-                     <span class="grid_cell grid_cell--gh">Viernes</span>
-                     <span class="grid_cell grid_cell--gh">Sabado</span>
-                     <span class="grid_cell grid_cell--gh">Domingo</span>
-                 </div>
-                 <div class="grid_body">
-                     
-                 </div>
-                </div>         
-      </div>       
-    `
-  }
-  
-
-  static generateDates(monthToShow = moment()){
-    if(!moment.isMoment(monthToShow)){return null;}
+  static generateDates(monthToShow){
     let dateStart = moment(monthToShow).startOf('month')
     let dateEnd = moment(monthToShow).endOf('month')
     let cells = [];
@@ -47,26 +19,22 @@ class template{
 }
 
 class Calendar{
-    constructor(id){
-      this.cells = [];  
+    constructor(id){ 
       this.currentMonth = moment();
+      this.cells = []; 
       this.elCalendar = document.getElementById(id);
-      this.showtemplate();
       this.elGridBody = this.elCalendar.querySelector('.grid_body')
       this.elMonthname = this.elCalendar.querySelector('.month-name');
-      this.showCells();
+      this.initAll() 
     }
-    showtemplate(){
-     this.elCalendar.innerHTML = template.getTemplate()
+    initAll(){
+     this.cells = template.generateDates(this.currentMonth)
+     this.showCells()
      this.addEventListenerToControl();
     }
 
     showCells(){
         this.cells = template.generateDates(this.currentMonth);
-        if(this.cells == null){
-            console.error('Error en encontrar las Fechas');
-            return;
-        }
         this.elGridBody.innerHTML = '';
         let templateCells = '';
         for(let i=0;i<this.cells.length ; i++){
@@ -98,20 +66,15 @@ class Calendar{
       })   
     }
 
-    changeMonth(next=true){
+    changeMonth(next){
         if(next){
             this.currentMonth.add(1,'months')
-            console.log(this.currentMonth)
         }else{
             this.currentMonth.subtract(1,'months')
-            console.log(this.currentMonth)
         }
     }
 }
 
+window.onload = ()=> new Calendar('calendar');
 
-window.onload = init()
-function init(){
-  let calendar = new Calendar('calendar')
-}
 
