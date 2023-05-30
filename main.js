@@ -1,20 +1,6 @@
-class Calendar{
-    constructor(id){
-      this.cells = [];  
-      this.currentMonth = moment();
-      this.elCalendar = document.getElementById(id);
-      this.showtemplate();
-      this.elGridBody = this.elCalendar.querySelector('.grid_body')
-      this.elMonthname = this.elCalendar.querySelector('.month-name');
-      this.showCells();
-    }
-    showtemplate(){
-     this.elCalendar.innerHTML = this.getTemplate();
-     this.addEventListenerToControl();
-    }
-
-    getTemplate(){
-        return `
+class template{
+  static getTemplate(){
+    return `
         <div class="calendar_header">
                    <button type="button" class="control control--prev"> &lt;</button>
                    <span class="month-name">jun 2019</span>
@@ -34,21 +20,53 @@ class Calendar{
                  <div class="grid_body">
                      
                  </div>
-                </div>
-                   
+                </div>         
       </div>       
     `
+  }
+  
+
+  static generateDates(monthToShow = moment()){
+    if(!moment.isMoment(monthToShow)){return null;}
+    let dateStart = moment(monthToShow).startOf('month')
+    let dateEnd = moment(monthToShow).endOf('month')
+    let cells = [];
+    while(dateStart.day()!==1){dateStart.subtract(1,'days') }
+    while(dateEnd.day()!==0){ dateEnd.add(1,'days')}
+    do{
+     cells.push(
+       {
+           date: moment(dateStart),
+           isInCurrentMonth: dateStart.month()===monthToShow.month()
+       }
+     );
+     dateStart.add(1,'days');
+    }while(dateStart.isSameOrBefore(dateEnd))
+    return cells
+   }
+}
+
+class Calendar{
+    constructor(id){
+      this.cells = [];  
+      this.currentMonth = moment();
+      this.elCalendar = document.getElementById(id);
+      this.showtemplate();
+      this.elGridBody = this.elCalendar.querySelector('.grid_body')
+      this.elMonthname = this.elCalendar.querySelector('.month-name');
+      this.showCells();
+    }
+    showtemplate(){
+     this.elCalendar.innerHTML = template.getTemplate()
+     this.addEventListenerToControl();
     }
 
     showCells(){
-        this.cells = this.generateDates(this.currentMonth);
-        console.log(this.cells);
+        this.cells = template.generateDates(this.currentMonth);
         if(this.cells == null){
             console.error('Error en encontrar las Fechas');
             return;
         }
-        console.log(this.elGridBody);
-
         this.elGridBody.innerHTML = '';
         let templateCells = '';
         for(let i=0;i<this.cells.length ; i++){
@@ -65,39 +83,8 @@ class Calendar{
          // <span class="grid_cell grid_cell--gd grid_cell-disabled">35</span>
     }
 
-    generateDates(monthToShow = moment()){
-     if(!moment.isMoment(monthToShow)){
-       return null;
-     }
-     let dateStart = moment(monthToShow).startOf('month')
-     let dateEnd = moment(monthToShow).endOf('month')
-     let cells = [];
-     while(dateStart.day()!==1){
-        dateStart.subtract(1,'days')
-     }
-
-     while(dateEnd.day()!==0){
-        dateEnd.add(1,'days')
-     }
-
-     console.log(dateStart,dateEnd)
-
-     do{
-      cells.push(
-        {
-            date: moment(dateStart),
-            isInCurrentMonth: dateStart.month()===monthToShow.month()
-        }
-      );
-      dateStart.add(1,'days');
-     }while(dateStart.isSameOrBefore(dateEnd))
-
-     return cells
-    }
-
     addEventListenerToControl(){
       let elControls = this.elCalendar.querySelectorAll('.control');
-      console.log(elControls);
       elControls.forEach(control=>{
           control.addEventListener('click',e=>{
             let elTarget = e.target;
@@ -107,10 +94,8 @@ class Calendar{
               this.changeMonth(false)
             }
             this.showCells();
-          })
-          
-      })
-      
+          })    
+      })   
     }
 
     changeMonth(next=true){
@@ -123,6 +108,7 @@ class Calendar{
         }
     }
 }
+
 
 window.onload = init()
 function init(){
